@@ -20,16 +20,23 @@ router.post('/api/users/signin',[
              const decryptedPass = await decryptPassword(password,existingPass)
             if(decryptedPass)
             {
-                    const userDetails = {email:checkUser.email}
-                    delete userDetails.password 
+                    const userDetails = {...checkUser._doc}
+                    delete userDetails.password
+                    console.log(userDetails)
                     const userJWT = jwt.sign(userDetails,process.env.JWT_KEY)
-                    req.session = {
-                              jwt:userJWT
-                    }
-                    return res.json({message:'success'})
+                //     req.session = {
+                //               jwt:userJWT
+                //     }
+                    res.cookie('jwt', userJWT, {
+                        httpOnly: true,
+                        secure: false,
+                        sameSite: 'none', 
+                        path: '/'
+                      });
+                return res.json({message:'success',data:userDetails})
             }else
             {
-                    throw new BadRequestError('Invalid credentials')
+                   throw new BadRequestError('Invalid credentials')
             }
 
                     

@@ -3,8 +3,11 @@ const app = express();
 require("express-async-errors");
 const errorHandler = require("chordchat-common/src/middlewares/error-handler");
 
-const getProfileRouter = require("./src/routes/profile");
-const userActionsRouter = require("./src/routes/userActions");
+const signUpRouter = require("./src/routes/userSignup");
+const currentUserRouter = require("./src/routes/currentUser");
+const signOutRouter = require("./src/routes/userSignout");
+const signInRouter = require("./src/routes/userSignin");
+const forgotPasswordRouter = require("./src/routes/forgotPassword");
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
@@ -18,21 +21,22 @@ const corsOptions = {
         };
         app.use(cors(corsOptions));
 
-        
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(
 //           cookieSession({
 //             signed: false,
 //             secure: false,
-//             sameSite: 'none', 
+//             sameSite: 'none',  
 //             maxAge: 24 * 60 * 60 * 1000 
 //           })
 //         );
-        
-
-app.use(userActionsRouter);
-app.use(getProfileRouter);
+app.use(signUpRouter);
+app.use(currentUserRouter);
+app.use(signOutRouter);
+app.use(signInRouter);
+app.use(forgotPasswordRouter);
 app.use(errorHandler);
 
 module.exports = app;
