@@ -28,7 +28,7 @@ router.post('/api/users/signin',[
                 //               jwt:userJWT
                 //     }
                     res.cookie('jwt', userJWT, {
-                        httpOnly: true,
+                        
                         secure: false,
                         sameSite: 'none', 
                         path: '/'
