@@ -8,13 +8,16 @@ const {
   currentUserCookie
 } = require("chordchat-common");
 
-router.use(currentUser);
-router.use(requireAuth)
+// router.use(currentUser);
+// router.use(requireAuth)
 
 
 //route to search for users
 router.post("/api/user-service/find-users", async (req, res) => {
   try {
+    
+    const cookie = req.cookies.jwt 
+    console.log(cookie,'cookie')
     const searchTerm = req.body.searchTerm;
     console.log(req.currentUser,'user')
     if (
@@ -30,7 +33,7 @@ router.post("/api/user-service/find-users", async (req, res) => {
     });
    
     if (foundUsers.length > 0) {
-      return res.json({ message: "Users found", users: foundUsers,currentuser:req.currentUser });
+      return res.json({ message: "Users found", users: foundUsers,currentuser:req.currentUser,cookie:cookie?cookie:'nothing'});
     } else {
       return res
         .status(404)
@@ -42,7 +45,7 @@ router.post("/api/user-service/find-users", async (req, res) => {
   }
 });
 // route to view a certain user's profile
-router.get("/api/users/view-user-profile/:id", async (req, res) => {
+router.get("/api/user-service/view-user-profile/:id", async (req, res) => {
   try {
     const userId = req.params.id;
     let user = await User.findOne({ _id: userId });
@@ -54,12 +57,16 @@ router.get("/api/users/view-user-profile/:id", async (req, res) => {
 });
 
 // route to follow or unfollow a particular user
-router.post("/api/users-service/toggle-follow-user/:id", async (req, res) => {
+router.post("/api/user-service/toggle-follow-user/:id", async (req, res) => {
   const userId = req.params.id;
-  const user = req.currentUser;
+  // const user = req.currentUser;
+  const user = req.body.currentUser
+  console.log(userId)
   console.log(user);
   const targetUser = await User.findOne({ _id: userId });
-  const currentUser = await User.findOne({ _id: user._id });
+  console.log(targetUser,'tar')
+  const currentUser = await User.findOne({ _id: user });
+  console.log(currentUser,'curr')
 
   if (targetUser && currentUser) {
     const isFollowing = currentUser.idols.includes(userId);
@@ -94,5 +101,27 @@ router.post("/api/users-service/toggle-follow-user/:id", async (req, res) => {
     return res.status(400).send({ message: "Failed to follow, bad request" });
   }
 });
+
+router.get("/api/user-service/get-idols/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userData = await User.findOne({ _id: id });
+    let idolDetails = [];
+
+    if (userData) {
+      for (const user of userData.idols) {
+        const currentUser = await User.findOne({ _id: user });
+        idolDetails.push(currentUser);
+      }
+    }
+
+    console.log(idolDetails, 'idol details');
+    return res.json({ data: idolDetails });
+  } catch (error) {
+    console.error("Error fetching idol details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 module.exports = router;

@@ -10,12 +10,7 @@ const {
 const { body } = require("express-validator");
 const { decryptPassword, encryptPassword } = require("../helpers/encryptPassword");
 
-router.use(currentUser);
-router.use(requireAuth);
 
-router.get('/api/user-service/getme',(req,res)=>{
-  res.json({message:'Hey'})
-})
 router.patch(
   "/api/user-service/edit-profile",
   async (req, res) => {
