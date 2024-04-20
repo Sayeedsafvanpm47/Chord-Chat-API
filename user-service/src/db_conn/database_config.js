@@ -2,7 +2,7 @@
 const { MongoClient } = require('mongodb');
 
 // Connection URI for MongoDB
-const uri = "mongodb+srv://sayeedsafvan123:j6hOtbwkYgSssAVQ@cluster0.wy74oxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGO_URI
 
 // Create a new MongoClient instance
 const client = new MongoClient(uri);
@@ -14,7 +14,7 @@ async function run() {
     await client.connect();
     
     // Ping the deployment to check the connection
-    await client.db("chord_chat_users").command({ ping: 1 });
+    await client.db("users-chord-chat").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Close the MongoDB connection when done
