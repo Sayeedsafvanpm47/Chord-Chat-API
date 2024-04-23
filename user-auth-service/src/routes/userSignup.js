@@ -104,9 +104,16 @@ router.post(
       delete userDetails.password
       console.log(userDetails,'userDetails')
       const userJWT = jwt.sign(userDetails, process.env.JWT_KEY);
-      req.session = {
-        jwt: userJWT
-      };
+      // req.session = {
+      //   jwt: userJWT
+      // };
+      res.cookie('jwt', userJWT, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'none', 
+        path: '/',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      });
       return res.json({message:'Otp Verification success, user registered successfully',data:userDetails})
      }
      else

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const {body} = require('express-validator')
 const {validateRequest} = require('chordchat-common')
 const { BadRequestError } = require('chordchat-common')
-let currentuser
+
 signInRouter.post('/api/users/signin',[
           body('email').isEmail().withMessage('Email must be valid!')
           ,
@@ -29,7 +29,6 @@ signInRouter.post('/api/users/signin',[
                     //           jwt:userJWT
                     // }
 
-currentuser = req.session
                     res.cookie('jwt', userJWT, {
                         httpOnly: true,
                         secure: false,
@@ -37,7 +36,7 @@ currentuser = req.session
                         path: '/',
                         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
                       });
-                return res.json({message:'success',data:userDetails,token: userJWT,currentuser })
+                return res.json({message:'success',data:userDetails,token: userJWT })
             }else
             {
                    throw new BadRequestError('Invalid credentials')
@@ -50,4 +49,4 @@ currentuser = req.session
           }
 })
 
-module.exports = {signInRouter,currentuser}
+module.exports = {signInRouter}
