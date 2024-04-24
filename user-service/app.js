@@ -5,9 +5,11 @@ const errorHandler = require("chordchat-common/src/middlewares/error-handler");
 
 const getProfileRouter = require("./src/routes/profile");
 const userActionsRouter = require("./src/routes/userActions");
+const adminRouter = require('./src/routes/admin')
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
+const {currentUser,requireAuth} = require('chordchat-common')
 
 app.use(cookieParser())
 app.set("trust proxy", true);
@@ -19,11 +21,11 @@ app.set("trust proxy", true);
 const corsOptions = {
   origin: ['http://localhost:5173',/\.chordchat.dev\.dev$/],    // reqexp will match all prefixes
   methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
-  credentials: true,                // required to pass
+  credentials: true,             
   allowedHeaders: "Content-Type, Authorization, X-Requested-With",
 }
 app.options('*', cors(corsOptions))
-        app.use(cors(corsOptions));
+ app.use(cors(corsOptions));
 
         
 app.use(express.json());
@@ -39,9 +41,11 @@ app.use(
           })
         );
         
-
+app.use(currentUser)
+app.use(requireAuth)
 app.use(userActionsRouter);
 app.use(getProfileRouter);
+app.use(adminRouter)
 app.use(errorHandler);
 
 module.exports = app;

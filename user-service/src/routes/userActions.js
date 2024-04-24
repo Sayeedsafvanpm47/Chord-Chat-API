@@ -16,8 +16,7 @@ const {
 router.post("/api/user-service/find-users", async (req, res) => {
   try {
     
-    const cookie = req.cookies.jwt 
-    console.log(cookie,'cookie')
+  
     const searchTerm = req.body.searchTerm;
     console.log(req.currentUser,'user')
     if (
@@ -27,13 +26,13 @@ router.post("/api/user-service/find-users", async (req, res) => {
     ) {
       return res.status(400).json({ message: "Invalid search term" });
     }
-
+   
     const foundUsers = await User.find({
       email: { $regex: searchTerm, $options: "i" },
     });
    
     if (foundUsers.length > 0) {
-      return res.json({ message: "Users found", users: foundUsers,currentuser:req.currentUser,cookie:cookie?cookie:'nothing'});
+      return res.json({ message: "Users found", users: foundUsers,currentuser:req.currentUser});
     } else {
       return res
         .status(404)

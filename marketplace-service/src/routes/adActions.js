@@ -18,7 +18,7 @@ router.patch('/api/market/toggle-show-ad/:adId',async (req,res)=>{
                               throw new BadRequestError('Failed to change visibility')
                     }
                  
-                   return res.json({message:'Ad status changed successfully!'})
+                   return res.json({message:findAd.visibility ? 'Ad is visible' : 'Ad is hidden'})
 
           } catch (error) {
                      console.log(error)

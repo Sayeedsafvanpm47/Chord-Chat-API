@@ -17,7 +17,7 @@ router.get("/api/market/get-all-ads/:page", async (req, res) => {
     
   
     const skip = (page - 1) * limit;
-    ads = await Market.find({}).skip(skip).limit(limit)
+    ads = await Market.find({visibility:true,active:true}).skip(skip).limit(limit)
    
     // Market.createIndex({ createdAt: 1 });
    

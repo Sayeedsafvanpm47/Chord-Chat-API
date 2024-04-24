@@ -59,6 +59,17 @@ const UserSchema = new Schema({
   },
   notifications : {
     type : Array 
+  },
+  isAdmin : {
+    type:Boolean,
+    default : false
+  },
+  image:{
+    type:String
+  },
+  active : {
+    type:Boolean,
+    default : true
   }
 }, {
   toJSON:{
