@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -6,25 +7,38 @@ const Schema = mongoose.Schema;
 
 const MarketplaceSchema = new Schema({
   user_id:{
-    type : String 
+    type : String
+  },
+  username:{
+    type : String
   },
   description : {
     type : String,
   },
   image : {
-    type : String 
+    type : String ,
+   
   },
   price : {
-    type : Number 
+    type : Number,
+    default:0
   },
  active : {
-  type : Boolean 
+  type : Boolean ,
+  default:true
+
  },
  flagCount : {
-   type : Number 
+   type : Number ,
+   default:0
  },
  visibility : {
-  type : Boolean 
+  type : Boolean ,
+  default:true
+ },
+ flaggers : {
+  type:Array,
+  default:[]
  }
 },{ timestamps: true });
 
