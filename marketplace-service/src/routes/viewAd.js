@@ -9,7 +9,12 @@ router.get("/api/market/get-all-ads/:page", async (req, res) => {
     const page =  parseInt(req.params.page) || 0; 
     console.log(req.currentUser,'currentUser view')
     let ads
-    let total = await Market.countDocuments({});
+    let total = await Market.find( {
+      $and: [
+        { visibility: { $ne: false } }, 
+        { active: { $ne: false } }      
+      ]
+    }).countDocuments();
     const limit = 2; 
     let totalCount = Math.ceil(total / limit);
     if(page)
@@ -17,7 +22,12 @@ router.get("/api/market/get-all-ads/:page", async (req, res) => {
     
   
     const skip = (page - 1) * limit;
-    ads = await Market.find({visibility:true,active:true}).skip(skip).limit(limit)
+    ads = await Market.find({
+      $and: [
+        { visibility: { $ne: false } }, 
+        { active: { $ne: false } }      
+      ]
+    }).skip(skip).limit(limit);
    
     // Market.createIndex({ createdAt: 1 });
    

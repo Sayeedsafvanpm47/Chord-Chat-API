@@ -109,13 +109,38 @@ router.get("/api/user-service/get-idols/:id", async (req, res) => {
 
     if (userData) {
       for (const user of userData.idols) {
-        const currentUser = await User.findOne({ _id: user });
-        idolDetails.push(currentUser);
+        if(user !== id)
+        {
+          const currentUser = await User.findOne({ _id: user });
+          idolDetails.push(currentUser);
+        }
+       
       }
     }
 
     console.log(idolDetails, 'idol details');
     return res.json({ data: idolDetails });
+  } catch (error) {
+    console.error("Error fetching idol details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/api/user-service/get-fans/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userData = await User.findOne({ _id: id });
+    let fansDetails = [];
+
+    if (userData) {
+      for (const user of userData.fans) {
+        const currentUser = await User.findOne({ _id: user });
+      fansDetails.push(currentUser);
+      }
+    }
+
+    console.log(fansDetails.length, 'fans details');
+    return res.json({ data: fansDetails });
   } catch (error) {
     console.error("Error fetching idol details:", error);
     return res.status(500).json({ error: "Internal Server Error" });
