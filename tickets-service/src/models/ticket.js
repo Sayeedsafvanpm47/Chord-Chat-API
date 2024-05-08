@@ -49,6 +49,9 @@ const TicketSchema = new Schema(
       type: Array,
       default: [],
     },
+    image : {
+      type:String 
+    }
   },
   { timestamps: true }
 );

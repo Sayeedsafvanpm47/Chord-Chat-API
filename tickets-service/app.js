@@ -20,7 +20,6 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: "Content-Type, Authorization, X-Requested-With",
 };
-app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use(express.json());
