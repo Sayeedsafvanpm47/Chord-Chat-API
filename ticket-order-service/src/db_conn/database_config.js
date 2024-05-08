@@ -14,7 +14,7 @@ async function run() {
     await client.connect();
     
 
-    await client.db("marketplace-chordchat").command({ ping: 1 });
+    await client.db("ticket-orders-chordchat").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
    

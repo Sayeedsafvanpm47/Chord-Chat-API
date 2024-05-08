@@ -11,8 +11,8 @@ db_connect.once("open", () => {
   console.log("Database connected successfully!");
 
   try {
-    app.listen(3003, () => {
-      console.log("User service listening to port 3003");
+    app.listen(3007, () => {
+      console.log("Ticket order service listening to port 3007");
     });
   } catch (error) {
     console.log("error occured in app", error);
