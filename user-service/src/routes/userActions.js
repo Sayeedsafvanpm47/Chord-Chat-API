@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const Consumer = require('../messaging/consumer')
+const consumer = new Consumer()
 const {
   currentUser,
   requireAuth,
@@ -147,5 +149,48 @@ router.get("/api/user-service/get-fans/:id", async (req, res) => {
   }
 });
 
+async function saveLikedPost()
+{
+  try {
+    console.log('in like post')
+    await consumer.ConsumerMessages('like-post-queue','user-liked',async(message)=>{
+      const findUser = await User.findOne({_id:message.message.userId})
+      console.log(message.message.userId)
+      console.log(findUser,'currentState')
+      if(findUser)
+        {
+           let checkLiked = findUser.likedPosts.findIndex(item => item == message.message.postId)
+           if(checkLiked === -1)
+            {
+              findUser.likedPosts.push(message.message.postId)
+              await findUser.save()
+            }
+            else
+            {
+              findUser.likedPosts.splice(checkLiked, 1);
+              await findUser.save();
+            }
+         
+          console.log(findUser)
+        }
+    })
+   
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+saveLikedPost()
+
+
+
+router.get('/api/user-service/get-liked-posts',async (req,res)=>{
+  try {
+    const response = await User.findOne({_id:req.currentUser._id})
+    return res.json({message:'fetched liked posts',likedPosts:response.likedPosts})
+  } catch (error) {
+    
+  }
+})
 
 module.exports = router;

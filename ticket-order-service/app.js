@@ -5,6 +5,7 @@ require("express-async-errors");
 const { currentUser, requireAuth } = require("chordchat-common");
 const createOrder = require('./src/routes/createOrder')
 const getOrders = require('./src/routes/getOrders')
+const cancelOrder = require('./src/routes/cancelOrder')
 
 const cookieSession = require("cookie-session");
 const cookieParser = require("cookie-parser");
@@ -36,6 +37,6 @@ app.use(
 
 app.use(createOrder)
 app.use(getOrders)
-
+app.use(cancelOrder)
 
 module.exports = app;

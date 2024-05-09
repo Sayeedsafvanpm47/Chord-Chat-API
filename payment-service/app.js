@@ -34,8 +34,8 @@ app.use(
   })
 );
 
-// app.use(currentUser);
-// app.use(requireAuth);
+app.use(currentUser);
+app.use(requireAuth);
 app.use(handlePayment)
 app.use(stripePayment)
 

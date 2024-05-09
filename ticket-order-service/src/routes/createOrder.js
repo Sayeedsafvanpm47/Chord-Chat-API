@@ -7,35 +7,41 @@ const Producer = require('../messaging/producer')
 const producer = new Producer()
 async function createOrder() {
   try {
-    const orderInfo = await consumer.ConsumerMessages('order-queue','payment-success');
-   console.log(orderInfo,'info')
-   console.log(orderInfo.message,'order info to be saved')
-   if(orderInfo)
-    {
-const order = new Order(orderInfo.message)
-  
-  await order.save() 
-  console.log(order,'saved order')
-  let notificationstatus
-  if(order)
-    {
-     notificationstatus = await producer.publishMessage('order-placed-success',order)
-    //  const stockDetail = {ticketId:order.}
-     await producer.publishMessage('clear-stock',order.quantity)
-    }
- 
-  console.log('msg to be sent',notificationstatus)
-if(notificationstatus)
-{
-  console.log('msg successfully sent',notificationstatus)
-}
-    }
-  
-    // Further logic here to process the order info
+    await consumer.ConsumerMessages('orders-queue', 'payment-success', async (orderInfo) => {
+      console.log(orderInfo, 'info');
+      console.log(orderInfo.message, 'order info to be saved');
+      
+      // Process the order and save it to the database
+      const order = new Order(orderInfo.message);
+      await order.save();
+      if(order)
+        {
+          const stockDetils = {
+            ticketId:order.ticketId,
+            quantity:order.quantity
+          }
+          await producer.publishMessage('clear-stock',stockDetils)
+          const message = {
+            message :  {message:`Your order for ${order.quantity} ${order.title} tickets has been successfull`},
+            userId : order.userId
+          }
+          await producer.publishMessage('order-placed-info',message)
+        }else
+        {
+          const message = {
+            message :  {message:`Your order for ${order.quantity} ${order.title} tickets has failed please try again! `},
+            userId : order.userId
+          }
+          await producer.publishMessage('order-placed',message)
+        }
+      
+      // Further processing and message publishing
+    });
   } catch (error) {
     console.error("Error consuming message:", error);
   }
 }
-createOrder()
+
+createOrder();
 
 module.exports = router 

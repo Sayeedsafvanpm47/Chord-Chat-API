@@ -9,23 +9,24 @@ class Consumer {
     this.channel = await connection.createChannel();
   }
 
-  async ConsumerMessages(queueName, routingKey, handleMessage) {
+  async ConsumerMessages(queueName,routingKey) {
     if (!this.channel) await this.createChannel();
     const exchangeName = config.rabbitMQ.exchangeName;
     await this.channel.assertExchange(exchangeName, 'direct');
     const q = await this.channel.assertQueue(queueName);
     await this.channel.bindQueue(q.queue, exchangeName, routingKey);
 
-    this.channel.consume(q.queue, async (msg) => {
-      if (msg) {
-        const data = JSON.parse(msg.content.toString());
-        console.log(data, 'data received');
-        this.channel.ack(msg);
-        handleMessage(data); 
-      }
+    return new Promise((resolve, reject) => {
+      this.channel.consume(q.queue, (msg) => {
+        if (msg) {
+          const data = JSON.parse(msg.content.toString());
+          console.log(data);
+          this.channel.ack(msg);
+          resolve(data); 
+        }
+      });
     });
   }
 }
 
 module.exports = Consumer;
-

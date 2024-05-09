@@ -33,6 +33,14 @@ const OrderSchema = new Schema(
     },
     ticketId:{
       type: String
+    },
+    payment : {
+      type : Boolean
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Cancelled'],
+      default: 'Active' 
     }
   },
   { timestamps: true }

@@ -3,6 +3,8 @@ const router = express.Router();
 const Post = require("../models/post");
 const { v4: uuidv4 } = require("uuid");
 const { currentUser, requireAuth } = require("chordchat-common");
+const Producer = require('../messaging/producer')
+const producer = new Producer()
 
 router.get("/api/post-service/toggle-like-post/:id", async (req, res) => {
   try {
@@ -12,6 +14,10 @@ router.get("/api/post-service/toggle-like-post/:id", async (req, res) => {
     const user_id = req.currentUser._id;
     const findPost = await Post.findOne({ _id: postId });
     let isLiked;
+    let postMessage = {
+      postId : postId,
+      userId : user_id 
+    }
 
     if (findPost) {
       let findIfLiked = findPost.likes.findIndex(
@@ -20,15 +26,36 @@ router.get("/api/post-service/toggle-like-post/:id", async (req, res) => {
       if (findIfLiked !== -1) {
         findPost.likes.splice(findIfLiked, 1);
         isLiked = false;
-      } else {
-        findPost.likes.push({
-          user_id: user_id,
-          username: req.currentUser.username,
-        });
-        isLiked = true;
-      }
-      await findPost.save();
 
+      } else {
+        if(findPost.user_id !== user_id)
+          {
+            findPost.likes.push({
+              user_id: user_id,
+              username: req.currentUser.username,
+            });
+            isLiked = true;
+            const message = {
+              userId : findPost.user_id,
+              message : {message:`${req.currentUser.username} liked your post!`}
+            }
+            await producer.publishMessage('liked-post',message)
+           
+            console.log('liked post')
+          }
+          else
+          {
+            return res.json({message:'Your own post'})
+          }
+       
+     
+      }
+      await producer.publishMessage('user-liked',postMessage) 
+      await findPost.save();
+     
+  
+   
+      console.log(isLiked,'is liked')
       return res.json({
         message: isLiked ? "Liked post" : "Unliked post",
         findPost,isLiked
@@ -132,14 +159,11 @@ router.get("/api/post-service/share-post/:postId", async (req, res) => {
             const id = req.params.postId;
             const findPost = await Post.findOne({ _id: id });
             const sendMessage = `
-                    Check out this awesome video!
-                    ${findPost.title}
-                    ${findPost.description}
-                    http://localhost:5173/test
-                    Post and share your talent with people
-                    Login/Signup to chord chat: http://localhost:5173
-                    
-                `;
+            Check out this awesome post!
+            ${findPost.title}
+            Login/Signup to chord chat: http://localhost:5173
+`;
+     
             const encoded = encodeURIComponent(sendMessage);
             const isMobileDevice =
               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(

@@ -69,6 +69,10 @@ const UserSchema = new Schema({
   },active : {
     type:Boolean,
     default : true
+  },
+  likedPosts : {
+    type : Array,
+    default : []
   }
 }, {
   toJSON:{

@@ -3,7 +3,7 @@ const router = express.Router();
 const Ticket = require('../models/ticket');
 
 
-router.get('/api/ticket-service/get-all-tickets/:page/:user', async (req, res) => {
+router.get('/api/ticket-service/get-all-tickets/:page/:user?', async (req, res) => {
     try {
         const page =  parseInt(req.params.page) || 0; 
         const user = req.params.user || false 
