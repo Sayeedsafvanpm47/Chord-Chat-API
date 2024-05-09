@@ -4,6 +4,7 @@ const Post = require('../models/post')
 
 router.delete("/api/post-service/delete-post/:id",async (req, res) => {
           try {
+            console.log('in delete post')
               const postId = req.params.id;
               const findPost = await Post.deleteOne({_id:postId})
 

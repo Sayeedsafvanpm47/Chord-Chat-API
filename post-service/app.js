@@ -7,6 +7,7 @@ const getCreatePost = require('./src/routes/createPost')
 const getPosts = require('./src/routes/getPosts')
 const postActions = require('./src/routes/postActions')
 const editPost = require('./src/routes/editPost')
+const deletePost = require('./src/routes/deletePost')
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
@@ -40,6 +41,7 @@ app.use(getCreatePost)
 app.use(postActions)
 app.use(editPost)
 app.use(getPosts)
+app.use(deletePost)
 
 app.use(errorHandler)
 module.exports = app;
