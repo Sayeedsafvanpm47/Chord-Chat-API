@@ -23,7 +23,7 @@ io.on('connection',(socket)=>{
           console.log(users)
             const user = getUser(receiverId)
             console.log(user,'got user')
-            
+              console.log(user?.socketId,'socket id user')
                               io.to(user?.socketId).emit('getMessage',{
                                         senderId,
                                         text
@@ -33,7 +33,8 @@ io.on('connection',(socket)=>{
          })
          socket.on('videoCallInitiated',(data)=>{
           console.log(data.receiverId)
-          socket.to(data.receiverId).emit('videoCallAccept',{username:data.username,profilePic:data.profilePic,roomId:data.roomId})
+          const user = getUser(data.receiverId)
+          io.to(user?.socketId).emit('videoCallAccept',{username:data.username,profilePic:data.profilePic,roomId:data.roomId})
           console.log('emmitted the call event')
          })
          socket.on('disconnect',()=>{

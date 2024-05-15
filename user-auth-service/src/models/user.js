@@ -73,7 +73,26 @@ const UserSchema = new Schema({
   likedPosts : {
     type : Array,
     default : []
-  }
+  },
+  wallet : {
+    type : Number,
+    default : 0
+  },
+  hiringRate : {
+    type : Number
+   },
+   instrument : {
+    type : String 
+   },
+   location : {
+    type : String
+   },
+   jobDescription: {
+    type : String
+   },
+   jobProfile : {
+    type : Boolean
+   }
 }, {
   toJSON:{
         transform(doc,ret){

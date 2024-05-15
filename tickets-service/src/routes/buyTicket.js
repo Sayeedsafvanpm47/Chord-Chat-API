@@ -4,6 +4,8 @@ const Ticket = require("../models/ticket");
 const Consumer = require("../messaging/consumer");
 const {BadRequestError} = require('chordchat-common')
 const consumer = new Consumer();
+const Producer = require('../messaging/producer')
+const producer = new Producer()
 router.post(
   "/api/ticket-service/buy-ticket/:id/:quantity",
   async (req, res) => {
@@ -29,6 +31,40 @@ router.post(
     }
   }
 );
+router.post('/api/ticket-service/buy-with-wallet/:id/:quantity/:wallet',async (req,res)=>{
+  try {
+
+    const ticketId = req.params.id;
+    const quantity = req.params.quantity;
+    const wallet = req.params.wallet 
+
+    console.log(quantity, "quantity");
+  
+    const findTicket = await Ticket.findOne({ _id: ticketId });
+    const price = findTicket.price;
+    if(parseInt(wallet) > price * quantity )
+      {
+        let message = {
+          title: findTicket.title,
+          ticketId:findTicket._id,
+          userId: req.currentUser._id,
+          price:findTicket.price,
+          username: req.currentUser.username,
+          description:findTicket.description,
+          quantity:quantity,
+          image:findTicket.image,
+          totalAmount:quantity * price,
+          mode:'wallet'
+        };
+        await producer.publishMessage('payment-success',message)
+      }
+   return res.json({message:'Awaiting order confirmation'})
+   
+    
+  } catch (error) {
+    console.log(error)
+  }
+})
 async function clearStock() {
           console.log('in clear stock')
   try {

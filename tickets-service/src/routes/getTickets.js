@@ -10,7 +10,11 @@ router.get('/api/ticket-service/get-all-tickets/:page/:user?', async (req, res) 
         console.log('inside ticket')
         console.log(page);
         const limit = 2;
-        const skip = (page - 1) * limit;
+        let skip = (page - 1) * limit;
+        if(skip<0)
+            {
+                skip = 0
+            }
         let total
         let totalCount 
         let findTickets 

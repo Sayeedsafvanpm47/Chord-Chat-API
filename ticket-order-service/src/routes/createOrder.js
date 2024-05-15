@@ -26,6 +26,14 @@ async function createOrder() {
             userId : order.userId
           }
           await producer.publishMessage('order-placed-info',message)
+          if(orderInfo.message.mode == 'wallet')
+            {
+              const message = {
+                userId:order.userId,
+                amount:order.totalAmount
+              }
+              await producer.publishMessage('deduct-wallet',message)
+            }
         }else
         {
           const message = {

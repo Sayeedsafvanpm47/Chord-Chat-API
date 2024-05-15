@@ -6,6 +6,7 @@ const errorHandler = require("chordchat-common/src/middlewares/error-handler");
 const getProfileRouter = require("./src/routes/profile");
 const userActionsRouter = require("./src/routes/userActions");
 const adminRouter = require('./src/routes/admin')
+const hireMusicianRouter = require('./src/routes/hireMusicians')
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
@@ -46,6 +47,7 @@ app.use(requireAuth)
 app.use(userActionsRouter);
 app.use(getProfileRouter);
 app.use(adminRouter)
+app.use(hireMusicianRouter)
 app.use(errorHandler);
 
 module.exports = app;

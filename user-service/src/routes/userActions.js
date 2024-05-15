@@ -182,7 +182,44 @@ async function saveLikedPost()
 
 saveLikedPost()
 
+async function orderRefund()
+{
+  try {
+    await consumer.ConsumerMessages('refund-queue','refund-user',async(message)=>{
+      const findUser = await User.findOne({_id:message.message.userId})
+      
+      console.log(findUser,'found user')
+      if(findUser)
+        {
+          findUser.wallet = findUser.wallet + message.message.amount
+          await findUser.save()
+        }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
 
+orderRefund()
+
+async function walletDeduct()
+{
+  try {
+    await consumer.ConsumerMessages('wallet-queue','deduct-wallet',async(message)=>{
+      const findUser = await User.findOne({_id:message.message.userId})
+      
+      console.log(findUser,'found user')
+      if(findUser)
+        {
+          findUser.wallet = findUser.wallet - message.message.amount
+          await findUser.save()
+        }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+walletDeduct()
 
 router.get('/api/user-service/get-liked-posts',async (req,res)=>{
   try {
@@ -192,5 +229,17 @@ router.get('/api/user-service/get-liked-posts',async (req,res)=>{
     
   }
 })
+
+router.get('/api/user-service/get-wallet',async (req,res)=>{
+  try {
+    const user = await User.findOne({_id:req.currentUser._id})
+    return res.json({message:'fetched user wallet',wallet:user.wallet})
+  } catch (error) {
+    
+ console.log(error) 
+}
+})
+
+
 
 module.exports = router;

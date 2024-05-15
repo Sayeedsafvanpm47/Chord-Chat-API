@@ -39,7 +39,8 @@ const MarketplaceSchema = new Schema({
  flaggers : {
   type:Array,
   default:[]
- }
+ },
+
 },{ timestamps: true });
 
 // Create and export the User model
