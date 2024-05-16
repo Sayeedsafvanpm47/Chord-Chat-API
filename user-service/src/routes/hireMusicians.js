@@ -36,15 +36,6 @@ router.patch("/api/user-service/createJob", async (req, res) => {
   }
 });
 
-router.get("/api/user-service/get-jobs", async (req, res) => {
-  try {
-    const users = await User.find({});
-    const jobs = users.filter((item) => item.jobProfile == true);
-    return res.json({ message: "jobs fetched successfully", jobs });
-  } catch (error) {
-    console.log(error);
-  }
-});
 
 router.get("/api/user-service/get-jobs/:page", async (req, res) => {
   try {
@@ -89,6 +80,9 @@ router.post("/api/user-service/search-jobs", async (req, res) => {
     return res.json({ error });
   }
 });
+
+
+
 
 router.patch("/api/user-service/delete-job", async (req, res) => {
   try {

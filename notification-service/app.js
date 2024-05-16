@@ -3,8 +3,11 @@ const app = express();
 require("express-async-errors");
 const { currentUser, requireAuth } = require("chordchat-common");
 const orderNotification = require('./src/routes/orderNotification');
+const enquiryNotification = require('./src/routes/enquiryNotification')
 const getNotification = require('./src/routes/getNotification')
 const likesNotification = require('./src/routes/likesNotification')
+const followNotification = require('./src/routes/followNotification')
+const flagNotification = require('./src/routes/flagNotification')
 const cookieSession = require("cookie-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -79,7 +82,11 @@ const io = socketIo(server, {
 // Use orderNotification routes
 app.use(orderNotification);
 app.use(likesNotification)
+app.use(enquiryNotification)
+app.use(flagNotification)
+app.use(followNotification)
 app.use(getNotification)
+
 
 // Export the Express app and server
 module.exports = { app, server };

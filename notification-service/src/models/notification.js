@@ -11,6 +11,9 @@ const NotificationSchema = new Schema({
   },
   userId : {
     type : String
+  },
+  type : {
+    type : String 
   }
 },{ timestamps: true });
 

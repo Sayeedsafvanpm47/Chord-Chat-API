@@ -22,4 +22,26 @@ router.get('/api/ticket-order-service/get-orders',async(req,res)=>{
           }
 })
 
+router.get('/api/ticket-order-service/get-all-orders/:page',async(req,res)=>{
+          try {
+                    const page = parseInt(req.params.page) || 0;
+                    let total = await Order.find({}).countDocuments();
+                        const limit = 2;
+                        let skip = (page-1) * limit 
+                        let totalCount = Math.ceil(total / limit);
+
+                    const orders = await Order.find({}).skip(skip).limit(limit)
+                    console.log(orders)
+                    if(orders)
+                              {
+                                        return res.json({message:'Orders fetched successfully',orders,totalCount})
+                              }else
+                              {
+                                        return res.json({message:'Failed to fetch orders',orders,totalCount})
+                              }
+          } catch (error) {
+                    console.log(error)
+          }
+})
+
 module.exports = router 

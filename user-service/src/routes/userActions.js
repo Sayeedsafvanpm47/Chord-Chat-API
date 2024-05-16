@@ -3,12 +3,15 @@ const router = express.Router();
 const User = require("../models/user");
 const Consumer = require('../messaging/consumer')
 const consumer = new Consumer()
+const Producer = require('../messaging/producer')
+const producer = new Producer()
 const {
   currentUser,
   requireAuth,
   BadRequestError,
   currentUserCookie
 } = require("chordchat-common");
+
 
 // router.use(currentUser);
 // router.use(requireAuth)
@@ -91,6 +94,13 @@ router.post("/api/user-service/toggle-follow-user/:id", async (req, res) => {
       currentUser.idols.push(userId);
       await targetUser.save();
       await currentUser.save();
+      const FollowAction = {
+        userId : userId,
+        message : {message:`${currentUser.username} started following you!`},
+        followerId:currentUser._id,
+        type : 'Follow'
+      }
+      await producer.publishMessage('follow-user',FollowAction)
       return res.json({
         message:
           "User followed successfully,event generated to be consumed by notification service",

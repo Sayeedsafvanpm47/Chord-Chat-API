@@ -204,6 +204,11 @@ router.post('/api/post-service/add-comment/:id',async (req,res)=>{
 
                     findPost.comments.push({user_id,username,profile,comment,commentId:uuidv4()})
                    await findPost.save()
+                   const message = {
+                    userId : findPost.user_id,
+                    message : {message:`${req.currentUser.username} commented "${comment}" on your post!`}
+                  }
+                  await producer.publishMessage('liked-post',message)
                  
                     return res.json({message:'comment added successfully!',data:findPost})
 
@@ -233,6 +238,12 @@ router.post('/api/post-service/flag-post/:id', async (req, res) => {
                       findPost.flaggers.push(userId);
                       findPost.flagcount++;
                       message = 'Post flagged!';
+                      const flagAction = {
+                        userId : findPost.user_id,
+                        message : {message:`Your post was flagged by a user`}
+                      }
+                      await producer.publishMessage('flag-post',flagAction)
+
                   } else {
                    
                       findPost.flaggers.splice(findIfFlaggedIndex, 1);
@@ -242,8 +253,14 @@ router.post('/api/post-service/flag-post/:id', async (req, res) => {
       
                   if (findPost.flagcount > 5) {
                       findPost.active = false;
+                      const flagAction = {
+                        userId : findPost.user_id,
+                        message : {message:`Your post is hidden since it exceeded flag count!`}
+                      }
+                      await producer.publishMessage('flag-post',flagAction)
                   }
                   await findPost.save();
+                  
                   return res.status(200).send({ message: message, findPost });
               } else {
                   return res.status(404).send({ message: 'Post not found' });
