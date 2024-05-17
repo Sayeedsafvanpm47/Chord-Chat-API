@@ -231,6 +231,41 @@ async function walletDeduct()
 }
 walletDeduct()
 
+async function addPost(){
+  try {
+    await consumer.ConsumerMessages('post-queue','post-user',async (message)=>{
+      const findUser = await User.findOne({_id:message.message.userId})
+      if(findUser)
+        {
+          findUser.gigs.push(message.message.gigId)
+          await findUser.save()
+        }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+addPost()
+async function deletePost()
+{
+  try {
+    await consumer.ConsumerMessages('post-queue','delete-user-post',async (message)=>{
+      const findUser = await User.findOne({_id:message.message.userId})
+      if(findUser)
+        {
+          const findId = findUser.gigs.findIndex(item => item == message.message.postId)
+          if(findId !== -1)
+            {
+              findUser.gigs.splice(findId,1)
+              await findUser.save()
+            }
+        }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+deletePost()
 router.get('/api/user-service/get-liked-posts',async (req,res)=>{
   try {
     const response = await User.findOne({_id:req.currentUser._id})

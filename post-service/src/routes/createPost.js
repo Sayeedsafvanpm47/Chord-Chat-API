@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Post = require('../models/post')
+const Producer = require('../messaging/producer')
+const producer = new Producer()
 
 const {
   BadRequestError,
@@ -35,7 +37,11 @@ if (req.file) {
   const postCreated = new Post(postData)
   await postCreated.save()
   console.log(postCreated)
-
+  const message = {
+    userId : user_id,
+    gigId : postCreated._id 
+  }
+  await producer.publishMessage('post-user',message)
   return res.json({message:'success',data:postData})
 }
   
