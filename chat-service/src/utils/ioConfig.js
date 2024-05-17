@@ -35,7 +35,7 @@ io.on('connection',(socket)=>{
           console.log(data.receiverId)
           const user = getUser(data.receiverId)
           io.to(user?.socketId).emit('videoCallAccept',{username:data.username,profilePic:data.profilePic,roomId:data.roomId})
-          console.log('emmitted the call event')
+          console.log('emmitted the call event to',user?.socketId)
          })
          socket.on('disconnect',()=>{
           console.log('A user disconnected!')
