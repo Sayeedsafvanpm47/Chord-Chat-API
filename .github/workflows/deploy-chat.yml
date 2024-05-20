@@ -1,0 +1,25 @@
+name: deploy-chat
+
+on:
+  push:
+    branches:
+       - main
+    paths: 
+       - 'chat-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v2
+      - run: cd chat-service && docker build -t sydsfn/chat .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+        env: 
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}} 
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+      - run: docker push sydsfn/chat
+      - uses: digitalocean/action-doctl@v2
+        with: 
+          token: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save chordchat
+      - run: kubectl rollout restart deployment chat-depl
