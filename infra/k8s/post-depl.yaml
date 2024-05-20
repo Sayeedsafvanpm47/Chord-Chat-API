@@ -1,0 +1,44 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: post-depl
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: post 
+  template:
+    metadata:
+      labels: 
+        app: post 
+    spec: 
+      containers: 
+        - name: post 
+          image: sydsfn/post  
+          env: 
+           - name: MONGO_URI
+             valueFrom: 
+               secretKeyRef:
+                name: mongo-uri-chordchat
+                key: MONGO_URI 
+           - name: JWT_KEY
+             valueFrom: 
+               secretKeyRef:
+                name: jwt-secret-chordchat
+                key: JWT_KEY 
+          
+           - name: PORT
+             value: '3004'
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: post-srv
+spec: 
+  selector:
+    app: post  
+  ports:
+  - name: post    
+    protocol: TCP 
+    port: 3004
+    targetPort: 3004

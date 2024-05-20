@@ -270,6 +270,37 @@ router.post('/api/post-service/flag-post/:id', async (req, res) => {
               res.status(500).send({ message: 'Internal server error' });
           }
       });
+
+      router.patch('/api/post-service/toggle-post-visibility/:postId',async(req,res)=>{
+        try {
+          const postId = req.params.postId 
+          const findPost = await Post.findOne({_id:postId})
+          if(findPost)
+            {
+              findPost.visibility = !findPost.visibility 
+              await findPost.save()
+            }
+            return res.json({message:'Post visibility changed',findPost})
+        } catch (error) {
+          
+        }
+      })
+
+      router.post("/api/post-service/search-posts", async (req, res) => {
+        try {
+          const { searchTerm } = req.body;
+      
+          console.log(searchTerm);
+          const findPosts = await Post.find({
+            title: { $regex: searchTerm, $options: "i" },
+          });
+          return res.json({ data: findPosts });
+        } catch (error) {
+          console.log(error);
+          return res.json({ error });
+        }
+      });
+      
       
 
 module.exports = router;

@@ -24,6 +24,63 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
+    - image: sydsfn/post
+      context: post-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/chat
+      context: chat-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/market
+      context: marketplace-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/notification
+      context: notification-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/payment
+      context: payment-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+
+    - image: sydsfn/ticket
+      context: tickets-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/ticket-order
+      context: ticket-order-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
   
     
 

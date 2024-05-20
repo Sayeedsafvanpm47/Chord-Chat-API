@@ -5,7 +5,7 @@ const { MongoClient } = require('mongodb');
 const uri = process.env.MONGO_URI
 
 // Create a new MongoClient instance
-const client = new MongoClient(uri);
+const client = new MongoClient(uri,{reconnectTries:60,reconnectInterval:1000});
 
 // Function to connect to MongoDB
 async function run() {
