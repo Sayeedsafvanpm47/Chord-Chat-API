@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
         - name: chat
-          image: sydsfn/chat  
+          image: sydsfn/chats   
           env: 
            - name: MONGO_URI
              valueFrom: 
