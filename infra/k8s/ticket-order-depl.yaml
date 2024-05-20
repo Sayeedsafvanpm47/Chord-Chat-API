@@ -1,0 +1,44 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: ticket-order-depl
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ticket-order 
+  template:
+    metadata:
+      labels: 
+        app: ticket-order 
+    spec: 
+      containers: 
+        - name: ticket-order 
+          image: sydsfn/ticket-order  
+          env: 
+           - name: MONGO_URI
+             valueFrom: 
+               secretKeyRef:
+                name: mongo-uri-chordchat
+                key: MONGO_URI 
+           - name: JWT_KEY
+             valueFrom: 
+               secretKeyRef:
+                name: jwt-secret-chordchat
+                key: JWT_KEY 
+          
+           - name: PORT
+             value: '3007'
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: ticket-order-srv
+spec: 
+  selector:
+    app: ticket-order  
+  ports:
+  - name: ticket-order    
+    protocol: TCP 
+    port: 3007
+    targetPort: 3007  

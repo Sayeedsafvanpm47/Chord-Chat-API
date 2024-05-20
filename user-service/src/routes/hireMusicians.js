@@ -92,6 +92,7 @@ router.patch("/api/user-service/delete-job", async (req, res) => {
       user.jobProfile = false;
       user.instrument = "";
       user.location = "";
+      await user.save()
     }
 
     return res.json({ message: "Successfully deleted job" });

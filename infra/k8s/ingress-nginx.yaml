@@ -28,4 +28,53 @@ spec:
             name: user-service-srv
             port:
               number: 3002
+      - path: /api/ticket-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ticket-srv
+            port:
+              number: 3005
+      - path: /api/ticket-order-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ticket-order-srv
+            port:
+              number: 3007
+      - path: /api/market/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: market-srv
+            port:
+              number: 3003
+      - path: /api/chat-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-srv
+            port:
+              number: 3009
+      - path: /api/payment-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-srv
+            port:
+              number: 3006
+      - path: /api/notification-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-srv
+            port:
+              number: 3008
+      - path: /api/post-service/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: post-srv
+            port:
+              number: 3004
     
