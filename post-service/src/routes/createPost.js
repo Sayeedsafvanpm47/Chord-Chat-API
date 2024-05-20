@@ -42,7 +42,7 @@ if (req.file) {
     gigId : postCreated._id 
   }
   await producer.publishMessage('post-user',message)
-  return res.json({message:'successfully created',data:postData})
+  return res.json({message:'successfully created post',data:postData})
 }
   
 } catch (error) {
