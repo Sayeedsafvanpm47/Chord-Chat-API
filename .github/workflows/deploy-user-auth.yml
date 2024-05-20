@@ -3,7 +3,7 @@ name: deploy-user-auth
 on:
   push:
     branches:
-       - master
+       - main
     paths: 
        - 'user-auth-service/**'
 
