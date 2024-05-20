@@ -3,7 +3,7 @@ name: deploy-chat
 on:
   push:
     branches:
-       - master
+       - main
     paths: 
        - 'chat-service/**'
 
