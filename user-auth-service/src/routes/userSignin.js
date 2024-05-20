@@ -8,7 +8,7 @@ const {validateRequest} = require('chordchat-common')
 const { BadRequestError } = require('chordchat-common')
 
 signInRouter.post('/api/users/signin',[
-          body('email').isEmail().withMessage('Email must be valid!')
+          body('email').isEmail().withMessage('Email must be valid!!')
           ,
           body('password').trim().notEmpty().withMessage('You must enter a password!')
 ],validateRequest,async (req,res,next)=>{
