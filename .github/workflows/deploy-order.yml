@@ -3,7 +3,7 @@ name: deploy-ticket-order
 on:
   push:
     branches:
-       - master
+       - main
     paths: 
        - 'ticket-order-service/**'
 
