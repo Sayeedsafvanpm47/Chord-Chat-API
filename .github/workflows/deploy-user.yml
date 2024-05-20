@@ -1,0 +1,26 @@
+name: deploy-user 
+
+on:
+  push:
+    branches:
+       - master
+    paths: 
+       - 'user-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v2
+      - run: cd user-service && docker build -t sydsfn/user-service .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+        env: 
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}} 
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+      - run: docker push sydsfn/user-service
+      - uses: digitalocean/action-doctl@v2
+        with: 
+          token: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save chordchat
+      - run: kubectl rollout restart deployment user-service-depl
+          
