@@ -1,0 +1,53 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: user-auth-depl
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-auth
+  template:
+    metadata:
+      labels: 
+        app: user-auth
+    spec: 
+      containers: 
+        - name: user-auth
+          image: sydsfn/user-auth
+          env: 
+           - name: MONGO_URI
+             valueFrom: 
+               secretKeyRef:
+                name: mongo-uri-chordchat
+                key: MONGO_URI 
+           - name: JWT_KEY
+             valueFrom: 
+               secretKeyRef:
+                name: jwt-secret-chordchat
+                key: JWT_KEY 
+           - name: MAIL_USER
+             valueFrom: 
+               secretKeyRef:
+                name: mail-user-chordchat
+                key: MAIL_USER 
+           - name: MAIL_PASS
+             valueFrom: 
+               secretKeyRef:
+                name: mail-pass-chordchat
+                key: MAIL_PASS 
+           - name: PORT
+             value: '3001'
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: user-auth-srv
+spec: 
+  selector:
+    app: user-auth 
+  ports:
+  - name: user-auth   
+    protocol: TCP 
+    port: 3001
+    targetPort: 3001

@@ -1,0 +1,31 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+manifests:
+  rawYaml:
+    - ./infra/k8s/*
+build:
+  local: 
+    push: false 
+  
+  artifacts:
+    - image: sydsfn/user-auth
+      context: user-auth-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: sydsfn/user-service
+      context: user-service 
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+  
+    
+
+
+  
