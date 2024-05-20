@@ -3,7 +3,7 @@ name: deploy-marketplace
 on:
   push:
     branches:
-       - master
+       - main
     paths: 
        - 'marketplace-service/**'
 
