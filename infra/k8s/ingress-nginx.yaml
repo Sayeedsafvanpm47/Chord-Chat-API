@@ -4,9 +4,7 @@ metadata:
   name: ingress-service
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PATCH"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173"
     nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
@@ -77,35 +75,37 @@ spec:
             name: post-srv
             port:
               number: 3004
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'false'
-    service.beta.kubernetes.io/do-loadbalancer-hostname: 'www.chordchat.site'
-  labels:
-    helm.sh/chart: ingress-nginx-2.0.3
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/version: 0.32.0
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: controller
-  name: ingress-nginx-controller
-  namespace: ingress-nginx
-spec:
-  type: LoadBalancer
-  externalTrafficPolicy: Local
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-    - name: https
-      port: 443
-      protocol: TCP
-      targetPort: https
-  selector:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/component: controller    
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   annotations:
+#     # service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'false'
+#     service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+#     service.beta.kubernetes.io/do-loadbalancer-hostname: 'www.chordchat.site'
+  
+#   # labels:
+#   #   helm.sh/chart: ingress-nginx-2.0.3
+#   #   app.kubernetes.io/name: ingress-nginx
+#   #   app.kubernetes.io/instance: ingress-nginx
+#   #   app.kubernetes.io/version: 0.32.0
+#   #   app.kubernetes.io/managed-by: Helm
+#   #   app.kubernetes.io/component: controller
+#   name: ingress-nginx-controller
+#   namespace: ingress-nginx
+# spec:
+#   type: LoadBalancer
+#   # externalTrafficPolicy: Local
+#   ports:
+#     - name: http
+#       port: 80
+#       protocol: TCP
+#       targetPort: http
+#     - name: https
+#       port: 443
+#       protocol: TCP
+#       targetPort: https
+#   selector:
+#     app.kubernetes.io/name: ingress-nginx
+#     app.kubernetes.io/instance: ingress-nginx
+#     app.kubernetes.io/component: controller    
