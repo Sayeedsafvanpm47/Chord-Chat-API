@@ -21,13 +21,13 @@ console.log(currentuser,'currentUser')
 //           credentials: true
 //         };
         const corsOptions = {
-          origin: ['http://localhost:5173',/\.chordchat.dev\.dev$/],    // reqexp will match all prefixes
+          origin: ['http://localhost:5173','chordchat.site'],    // reqexp will match all prefixes
           methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
           credentials: true,                // required to pass
           allowedHeaders: "Content-Type, Authorization, X-Requested-With",
         }
         // intercept pre-flight check for all routes
-        app.options('*', cors(corsOptions))
+        // app.options('*', cors(corsOptions))
         app.use(cors(corsOptions));
 
 
