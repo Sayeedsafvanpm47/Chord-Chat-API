@@ -21,6 +21,11 @@ spec:
                secretKeyRef:
                 name: mongo-uri-chordchat
                 key: MONGO_URI 
+           - name: JWT_KEY
+             valueFrom: 
+               secretKeyRef:
+                name: jwt-secret-chordchat
+                key: JWT_KEY     
            - name: PORT
              value: '3002'
 ---
