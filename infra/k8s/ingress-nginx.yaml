@@ -79,6 +79,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
