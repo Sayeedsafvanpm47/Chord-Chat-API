@@ -40,6 +40,14 @@ router.post('/api/users/generate-otp',async(req,res)=>{
   }
 })
 
+router.get('/api/users/hi',async(req,res)=>{
+  try {
+    res.json({message:'Hi'})
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.post(
   "/api/users/signup",
   [
