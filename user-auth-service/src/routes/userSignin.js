@@ -6,7 +6,14 @@ const jwt = require('jsonwebtoken')
 const {body} = require('express-validator')
 const {validateRequest} = require('chordchat-common')
 const { BadRequestError } = require('chordchat-common')
+const userController = require('../controllers/userController')
 
+
+signInRouter.post('/api/users/signin2',[
+  body('email').isEmail().withMessage('Email must be valid!!')
+  ,
+  body('password').trim().notEmpty().withMessage('You must enter a password!')
+],validateRequest,userController.signInUser)
 signInRouter.post('/api/users/signin',[
           body('email').isEmail().withMessage('Email must be valid!!')
           ,
