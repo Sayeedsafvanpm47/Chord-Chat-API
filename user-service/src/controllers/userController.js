@@ -87,6 +87,74 @@ const editUserProfile = async (req, res) => {
   }
 };
 
+const createJob = async (req, res) => {
+  try {
+    const user_id = req.currentUser?._id;
+    const jobStatus = await userService.createJob(user_id, req.body);
+    if (jobStatus) {
+      return res.status(201).json({ message: "Job created successfully" });
+    } else {
+      return res.status(400).json({ message: "Failed to create Job" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Failed to create job" });
+  }
+};
+
+const getJob = async (req, res) => {
+  try {
+    const page = parseInt(req.params.page) || 0;
+
+    const user_id = req.currentUser?._id;
+    const totalCount = await userService.getTotalJobs();
+    const jobs = await userService.getJobs(user_id, page);
+    console.log(page);
+    console.log(totalCount);
+    console.log(jobs);
+    if (totalCount && jobs) {
+      return res
+        .status(200)
+        .json({ message: "Fetched successfully", data: jobs, totalCount });
+    } else {
+      return res.status(400).json({ message: "Failed to fetch jobs" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Failed to get jobs" });
+  }
+};
+
+const searchJob = async (req, res) => {
+  try {
+    const { searchTerm } = req.body;
+    const findJobs = await userService.searchJobs(searchTerm);
+    return res.json({ data: findJobs });
+  } catch (error) {
+    console.log(error);
+    return res.json({ error });
+  }
+};
+
+const deleteJob = async (req, res) => {
+  try {
+    const id = req.currentUser._id;
+    const findUser = await userService.deleteJob(id);
+    if (findUser) {
+      return res.status(200).json({ message: "Successfully deleted job" });
+    } else {
+      return res.status(400).json({ message: "Failed to delete" });
+    }
+  } catch (error) {
+          console.log(error)
+          return res.status(500).json({message:'Failed to delete'})
+  }
+};
+
 module.exports = {
   editUserProfile,
+  createJob,
+  getJob,
+  searchJob,
+  deleteJob,
 };
