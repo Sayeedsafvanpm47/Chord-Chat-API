@@ -11,7 +11,7 @@ const OtpSchema = new Schema({
   },
   otp : {
           type : String,
-          required: true
+         
   }
 },{ timestamps: true });
 

@@ -7,10 +7,18 @@ const findUser = async (email) => {
 };
 
 const signUpUser = async (details) => {
-          const newUser = new User(details)
-          await newUser.save()
-          return newUser
+  const newUser = new User(details);
+  await newUser.save();
+  return newUser;
+};
 
+const updatePassword = async (email, password) => {
+  const findExistingUser = await User.findOne({ email: email });
+  if (findExistingUser) {
+    findExistingUser.password = password;
+    await findExistingUser.save();
+  }
+  return findExistingUser;
 };
 
 const findOtp = async (email) => {
@@ -34,10 +42,21 @@ const createOtp = async (email, otp) => {
   return createNewOtp;
 };
 
+const deleteOtp = async (email) => {
+  const findExistingOtp = await Otp.findOne({ email: email });
+  if (findExistingOtp) {
+    findExistingOtp.otp = "";
+    await findExistingOtp.save();
+  }
+  return findExistingOtp;
+};
+
 module.exports = {
   findUser,
   findOtp,
   updateOtp,
   createOtp,
-  signUpUser
+  signUpUser,
+  updatePassword,
+  deleteOtp
 };

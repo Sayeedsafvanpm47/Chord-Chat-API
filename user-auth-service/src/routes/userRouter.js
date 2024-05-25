@@ -24,5 +24,15 @@ router.post("/api/users/signout", userController.signOutUser);
 
 router.post("/api/users/generate-otp", userController.otpForUser);
 
-router.post("/api/users/signup", userController.signUpUser);
+router.post("/api/users/signup", [
+  body("email").isEmail().withMessage("Email must be valid"),
+  body("password")
+    .trim()
+    .isLength({ min: 4, max: 20 })
+    .withMessage("Invalid password credentials"),
+
+],
+validateRequest, userController.signUpUser);
+
+router.post("/api/users/forgotPassword",userController.passWordResetUser)
 module.exports = router;

@@ -9,6 +9,7 @@ const Otp = require("../models/otp-verify");
 const generateOtp = require("../helpers/generateOtp");
 const { sendMail } = require("../utils/sendMail");
 
+//controller for sign in
 const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -40,6 +41,7 @@ const signInUser = async (req, res, next) => {
   }
 };
 
+//controller for signout
 const signOutUser = async (req, res, next) => {
   try {
     req.session = null;
@@ -55,30 +57,26 @@ const signOutUser = async (req, res, next) => {
   }
 };
 
-const otpForUser = async (req,res)=>{
-         try {
-          const email = req.body.email
-    
-          const otp = await generateOtp()
-          if(!email) throw new BadRequestError('Please enter an email!')
-               await sendMail(email,otp).then((res)=>console.log(res))
-          let findOtp = await userService.findOtp(email)
-          console.log(findOtp,'found otp')
-          if(findOtp){
-                    await userService.updateOtp(email,otp)
-                    
-          }else
-          {
-                    await userService.createOtp(email,otp)
-                  
-          }
-          return res.json({message:'otp generated',otp,email})
-         } catch (error) {
-          
-         }
- 
-}
+//controller for otp generation and updation
+const otpForUser = async (req, res) => {
+  try {
+    const email = req.body.email;
 
+    const otp = await generateOtp();
+    if (!email) throw new BadRequestError("Please enter an email!");
+    await sendMail(email, otp).then((res) => console.log(res));
+    let findOtp = await userService.findOtp(email);
+    console.log(findOtp, "found otp");
+    if (findOtp) {
+      await userService.updateOtp(email, otp);
+    } else {
+      await userService.createOtp(email, otp);
+    }
+    return res.json({ message: "otp generated", otp, email });
+  } catch (error) {}
+};
+
+//controller for sign up
 const signUpUser = async (req, res, next) => {
   try {
     const {
@@ -91,16 +89,16 @@ const signUpUser = async (req, res, next) => {
       enteredOtp,
     } = req.body;
     let otp;
-    const verifyOtp = await userService.findOtp(email)
+    const verifyOtp = await userService.findOtp(email);
 
     if (verifyOtp) {
       otp = verifyOtp.otp;
     } else {
       throw new BadRequestError("Confirm the email in which the otp was sent!");
     }
-    console.log(otp, "otp");
-    const emailExist = await userService.findUser(email)
-    console.log(req.session, "session");
+
+    const emailExist = await userService.findUser(email);
+
     if (emailExist) {
       throw new BadRequestError("Email already exists");
     }
@@ -115,18 +113,13 @@ const signUpUser = async (req, res, next) => {
       lastname,
       talent,
     };
-    console.log(signUpDetails, "signupdetails");
-    console.log(enteredOtp, "entered");
-    console.log(otp, "otp");
-    console.log(enteredOtp == otp);
+
     if (enteredOtp == otp) {
-      console.log(otp, "inside");
-      const newUser = await userService.signUpUser(signUpDetails)
-      
+      const newUser = await userService.signUpUser(signUpDetails);
 
       const userDetails = { ...newUser._doc };
       delete userDetails.password;
-      console.log(userDetails, "userDetails");
+
       const userJWT = jwt.sign(userDetails, process.env.JWT_KEY);
       // req.session = {
       //   jwt: userJWT
@@ -138,7 +131,8 @@ const signUpUser = async (req, res, next) => {
         path: "/",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
-      return res.json({
+      await userService.deleteOtp(email)
+      return res.status(201).json({
         message: "Otp Verification success, user registered successfully",
         data: userDetails,
       });
@@ -155,9 +149,45 @@ const signUpUser = async (req, res, next) => {
   }
 };
 
+const passWordResetUser = async (req, res) => {
+  try {
+    const { email, enteredOtp, newPassword, confirmPassword } = req.body;
+    const findOtp = await userService.findOtp(email);
+    let otp;
+    if (!findOtp)
+      throw new BadRequestError("Confirm the email in which the otp was sent!");
+    otp = findOtp.otp;
+    console.log(otp, "otpfound");
+    console.log(enteredOtp, "entered");
+    if (otp == enteredOtp) {
+      if (newPassword == confirmPassword) {
+        const encryptedPassword = await encryptPassword(newPassword);
+        console.log(encryptedPassword);
+        const user = await userService.updatePassword(email,encryptedPassword)
+        if (user) {
+          console.log(user,'user deets')
+          await userService.deleteOtp(email)
+          res.json({ message: "Password changed successfully!" });
+        } else {
+          throw new BadRequestError("Something went wrong!");
+        }
+      } else {
+        throw new BadRequestError("The passwords does not match");
+      }
+    } else {
+      throw new BadRequestError("Otp verification failed!");
+    }
+  } catch (error) {
+          res.json({errors:[error.message]})
+           console.log(error.message)
+  }
+};
+
+
 module.exports = {
   signInUser,
   signOutUser,
   signUpUser,
-  otpForUser
+  otpForUser,
+  passWordResetUser
 };

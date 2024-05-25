@@ -5,7 +5,11 @@ const findUser = async (email)=>{
 }
 
 const signUpUser = async (details)=>{
-          return userRepository(details)
+          return userRepository.signUpUser(details)
+}
+
+const updatePassword = async (email,password)=>{
+          return userRepository.updatePassword(email,password)
 }
 
 const findOtp = async (email)=>{
@@ -20,6 +24,10 @@ const createOtp = async (email,otp)=>{
           return userRepository.createOtp(email,otp)
 }
 
+const deleteOtp = async (email)=>{
+          return userRepository.deleteOtp(email)
+}
+
 module.exports = {
-findUser,findOtp,updateOtp,createOtp,signUpUser
+findUser,findOtp,updateOtp,createOtp,signUpUser,updatePassword,deleteOtp
 }
