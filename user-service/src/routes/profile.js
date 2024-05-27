@@ -17,4 +17,14 @@ router.get("/api/user-service/get-jobs/:page",userController.getJob)
 router.post("/api/user-service/search-jobs",userController.searchJob)
 
 router.patch("/api/user-service/delete-job",userController.deleteJob)
-module.exports = router;
+
+router.post("/api/user-service/find-users",userController.findUsers)
+
+router.get("/api/user-service/view-user-profile/:id",userController.viewUserProfile)
+
+router.post("/api/user-service/toggle-follow-user/:id",userController.toggleFollow)
+
+router.get("/api/user-service/get-idols/:id",userController.getIdols)
+
+router.get("/api/user-service/get-fans/:id",userController.getFans)
+module.exports = router

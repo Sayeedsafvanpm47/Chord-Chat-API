@@ -6,6 +6,10 @@ const {
 } = require("../helpers/encryptPassword");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
+const Consumer = require('../messaging/consumer')
+const consumer = new Consumer()
+const Producer = require('../messaging/producer')
+const producer = new Producer()
 
 const editUserProfile = async (req, res) => {
   try {
@@ -151,10 +155,149 @@ const deleteJob = async (req, res) => {
   }
 };
 
+//user actions 
+
+const findUsers = async (req,res)=>{
+  try {
+    const searchTerm = req.body.searchTerm;
+    console.log(req.currentUser,'user')
+    if (
+      !searchTerm ||
+      typeof searchTerm !== "string" ||
+      searchTerm.trim() === ""
+    ) {
+      return res.status(400).json({ message: "Invalid search term" });
+    }
+   
+    const foundUsers = await userService.findUsers(searchTerm)
+   
+    if (foundUsers.length > 0) {
+      return res.json({ message: "Users found", users: foundUsers,currentuser:req.currentUser});
+    } else {
+      return res
+        .status(404)
+        .json({ message: "No users found matching the search term" });
+    }
+
+  } catch (error) {
+    console.error("Error finding users:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const viewUserProfile = async (req,res)=>{
+  try {
+
+    const userId = req.params.id;
+    let user = await userService.findUser(userId)
+    if (!user) throw new BadRequestError("User does not exist");
+    return res.json({ userDetails: user });
+    
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message:"Internal server error",error:error})
+  }
+}
+
+const toggleFollow = async (req,res)=>{
+  try {
+
+    const userId = req.params.id;
+
+  const user = req.currentUser._id 
+  console.log(userId)
+  console.log(user);
+  const currentUser = await userService.findUser(user)
+  const targetUser = await userService.findUser(userId)
+  const followStatus = await userService.toggleFollow(user,userId)
+ console.log(followStatus)
+
+    if (followStatus == 'Unfollowed') {
+     
+      return res.json({
+        message: "User unfollowed successfully",currentUser,targetUser
+      });
+    } else {
+   
+      const FollowAction = {
+        userId : userId,
+        message : {message:`${currentUser.username} started following you!`},
+        followerId:currentUser._id,
+        type : 'Follow'
+      }
+      await producer.publishMessage('follow-user',FollowAction)
+      return res.json({
+        message:
+          "User followed successfully,event generated to be consumed by notification service",
+        currentUser: currentUser,
+        followedUser: targetUser,
+      });
+    }
+  
+    
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message:"Error occured"})
+  }
+}
+
+const getIdols = async (req,res)=>{
+  try {
+
+     const id = req.params.id;
+    const userData = await userService.findUser(id)
+    let idolDetails = [];
+
+    if (userData) {
+      for (const user of userData.idols) {
+        if(user !== id)
+        {
+          const currentUser = await userService.findUser(user)
+          idolDetails.push(currentUser);
+        }
+       
+      }
+    }
+
+    console.log(idolDetails, 'idol details');
+    return res.json({ data: idolDetails });
+
+  } catch (error) {
+    console.error("Error fetching idol details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+const getFans = async (req,res)=>{
+  try {
+    const id = req.params.id;
+    const userData = await userService.findUser(id)
+    let fansDetails = [];
+
+    if (userData) {
+      for (const user of userData.fans) {
+        const currentUser = await userService.findUser(user)
+      fansDetails.push(currentUser);
+      }
+    }
+
+    console.log(fansDetails.length, 'fans details');
+    return res.json({ data: fansDetails });
+  } catch (error) {
+    console.error("Error fetching idol details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   editUserProfile,
   createJob,
   getJob,
   searchJob,
   deleteJob,
+  findUsers,
+  viewUserProfile,
+  toggleFollow,
+  getIdols,
+  getFans
 };

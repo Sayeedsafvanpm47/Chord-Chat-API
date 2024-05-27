@@ -28,6 +28,14 @@ const searchJobs = async (searchJobs)=>{
 const deleteJob = async (id)=>{
           return userRepository.deleteJob(id)
 }
+
+const findUsers = async (searchTerm)=>{
+          return userRepository.findUsers(searchTerm)
+}
+
+const toggleFollow = async (sourceId,targetId)=>{
+          return userRepository.toggleFollow(sourceId,targetId)
+}
 module.exports = {
-findUser,updateUserProfile,createJob,getTotalJobs,getJobs,searchJobs,deleteJob
+findUser,updateUserProfile,createJob,getTotalJobs,getJobs,searchJobs,deleteJob,findUsers,toggleFollow
 }

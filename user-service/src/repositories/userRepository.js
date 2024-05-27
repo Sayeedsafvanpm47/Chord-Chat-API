@@ -71,6 +71,44 @@ const deleteJob = async (id)=>{
           return findExistingUser
 }
 
+const findUsers = async (searchTerm)=>{
+  const findUsers = await User.find({
+    email: { $regex: searchTerm, $options: "i" },
+  });
+  return findUsers 
+}
+
+const toggleFollow = async (sourceId,targetId)=>{
+  const targetUser = await findUser(targetId)
+  console.log(targetUser,'tar')
+  const currentUser = await findUser(sourceId)
+  console.log(currentUser,'curr')
+
+  if (targetUser && currentUser) {
+    const isFollowing = currentUser.idols.includes(targetId);
+    console.log(isFollowing,'is following status')
+
+    if (isFollowing) {
+      const targetUserIndexInFollowers = targetUser.fans.indexOf(
+        sourceId
+      );
+      console.log(targetUserIndexInFollowers,'target user fans')
+      const currentUserIndexInIdols = currentUser.idols.indexOf(targetId);
+      console.log(currentUserIndexInIdols,'current user idols')
+      targetUser.fans.splice(targetUserIndexInFollowers, 1);
+      currentUser.idols.splice(currentUserIndexInIdols, 1);
+      await targetUser.save();
+      await currentUser.save();
+      return 'Unfollowed'
+    } else {
+      targetUser.fans.push(sourceId);
+      currentUser.idols.push(targetId);
+      await targetUser.save();
+      await currentUser.save();
+      return 'Followed'
+    }
+  }
+}
 module.exports = {
   findUser,
   updateUserProfile,
@@ -78,5 +116,7 @@ module.exports = {
   getTotalJobs,
   getJobs,
   searchJobs,
-  deleteJob 
+  deleteJob,
+  findUsers,
+  toggleFollow
 };
