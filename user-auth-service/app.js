@@ -20,28 +20,27 @@ app.set("trust proxy", true);
 //           optionsSuccessStatus: 200,
 //           credentials: true
 //         };
-        const corsOptions = {
-          origin: ['http://localhost:5173','https://sayeedsafvan.tech','www.chordchat.site'],    // reqexp will match all prefixes
-          methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
-          credentials: true,                // required to pass
-          allowedHeaders: "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Origin",
-        }
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://sayeedsafvan.tech', 'https://www.chordchat.site'],
+  methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
+  credentials: true,
+  allowedHeaders: "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Origin",
+};
         // intercept pre-flight check for all routes
-        // app.options('*', cors(corsOptions))
-        app.use(cors(corsOptions));
-
+        app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
-          cookieSession({
-            httpOnly:true,
-            signed: false,
-            secure: true,
-            sameSite: 'none',  
-            maxAge: 24 * 60 * 60 * 1000 
-          })
-        );
+    cookieSession({
+        httpOnly: true,
+        signed: false,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000
+    })
+);
 
 app.use(router);
 
