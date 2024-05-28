@@ -24,7 +24,7 @@ const corsOptions = {
   origin: ['http://localhost:5173', 'https://sayeedsafvan.tech'],
   methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
   credentials: true,
-  allowedHeaders: "*",
+  allowedHeaders: "Content-Type, Authorization, X-Requested-With",
 };
         // intercept pre-flight check for all routes
         app.options('*', cors(corsOptions));
