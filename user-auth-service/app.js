@@ -21,10 +21,10 @@ app.set("trust proxy", true);
 //           credentials: true
 //         };
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://sayeedsafvan.tech', 'https://www.chordchat.site'],
+  origin: ['http://localhost:5173', 'https://sayeedsafvan.tech'],
   methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
   credentials: true,
-  allowedHeaders: "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Origin",
+  allowedHeaders: "Content-Type, Authorization, X-Requested-With",
 };
         // intercept pre-flight check for all routes
         app.options('*', cors(corsOptions));
