@@ -21,7 +21,7 @@ app.set("trust proxy", true);
 //           credentials: true
 //         };
         const corsOptions = {
-          origin: ['http://localhost:5173','www.chordchat.site'],    // reqexp will match all prefixes
+          origin: ['http://localhost:5173','https://sayeedsafvan.tech','www.chordchat.site'],    // reqexp will match all prefixes
           methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
           credentials: true,                // required to pass
           allowedHeaders: "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Origin",
