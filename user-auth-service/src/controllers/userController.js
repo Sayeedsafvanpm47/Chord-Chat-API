@@ -25,7 +25,7 @@ const signInUser = async (req, res, next) => {
 
       res.cookie("jwt", userJWT, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: "none",
         path: "/",
       });
@@ -126,7 +126,7 @@ const signUpUser = async (req, res, next) => {
       // };
       res.cookie("jwt", userJWT, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: "none",
         path: "/",
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),

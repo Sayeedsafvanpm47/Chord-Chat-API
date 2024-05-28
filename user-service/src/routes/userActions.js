@@ -159,38 +159,38 @@ const {
 //   }
 // });
 
-async function saveLikedPost()
-{
-  try {
-    console.log('in like post')
-    await consumer.ConsumerMessages('like-post-queue','user-liked',async(message)=>{
-      const findUser = await User.findOne({_id:message.message.userId})
-      console.log(message.message.userId)
-      console.log(findUser,'currentState')
-      if(findUser)
-        {
-           let checkLiked = findUser.likedPosts.findIndex(item => item == message.message.postId)
-           if(checkLiked === -1)
-            {
-              findUser.likedPosts.push(message.message.postId)
-              await findUser.save()
-            }
-            else
-            {
-              findUser.likedPosts.splice(checkLiked, 1);
-              await findUser.save();
-            }
+// async function saveLikedPost()
+// {
+//   try {
+//     console.log('in like post')
+//     await consumer.ConsumerMessages('like-post-queue','user-liked',async(message)=>{
+//       const findUser = await User.findOne({_id:message.message.userId})
+//       console.log(message.message.userId)
+//       console.log(findUser,'currentState')
+//       if(findUser)
+//         {
+//            let checkLiked = findUser.likedPosts.findIndex(item => item == message.message.postId)
+//            if(checkLiked === -1)
+//             {
+//               findUser.likedPosts.push(message.message.postId)
+//               await findUser.save()
+//             }
+//             else
+//             {
+//               findUser.likedPosts.splice(checkLiked, 1);
+//               await findUser.save();
+//             }
          
-          console.log(findUser)
-        }
-    })
+//           console.log(findUser)
+//         }
+//     })
    
-  } catch (error) {
-    console.log(error)
-  }
-}
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-saveLikedPost()
+// saveLikedPost()
 
 async function orderRefund()
 {

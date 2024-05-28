@@ -4,11 +4,7 @@ const upload = require("../middleware/multer");
 const userController = require("../controllers/userController");
 
 
-router.patch(
-  "/api/user-service/edit-profile",
-  upload.single("image"),
-  userController.editUserProfile
-);
+router.patch("/api/user-service/edit-profile",upload.single("image"),userController.editUserProfile);
 
 router.patch("/api/user-service/createJob",userController.createJob)
 
