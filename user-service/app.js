@@ -10,6 +10,7 @@ const hireMusicianRouter = require('./src/routes/hireMusicians')
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
+const rabbitMQ = require('./src/services/rabbitMqService')
 const {currentUser,requireAuth} = require('chordchat-common')
 
 app.use(cookieParser())
@@ -44,6 +45,7 @@ app.use(
         
 app.use(currentUser)
 app.use(requireAuth)
+app.use(rabbitMQ);
 app.use(userActionsRouter);
 app.use(getProfileRouter);
 app.use(adminRouter)

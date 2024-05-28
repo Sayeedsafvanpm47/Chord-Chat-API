@@ -5,79 +5,92 @@ metadata:
   namespace: default
   annotations:
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173"
     nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
     nginx.ingress.kubernetes.io/use-regex: 'true'
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  tls:
+    - hosts:
+        - chordchat.site
+        - www.chordchat.site
+      secretName: chordchat-site-tls
   rules:
-  - host: chordchat.site
-    http:
-      paths:
-      - path: /api/users/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: user-auth-srv
-            port:
-              number: 3001
-      - path: /api/user-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: user-service-srv
-            port:
-              number: 3002
-      - path: /api/ticket-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: ticket-srv
-            port:
-              number: 3005
-      - path: /api/ticket-order-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: ticket-order-srv
-            port:
-              number: 3007
-      - path: /api/market/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: market-srv
-            port:
-              number: 3003
-      - path: /api/chat-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: chat-srv
-            port:
-              number: 3009
-      - path: /api/payment-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: payment-srv
-            port:
-              number: 3006
-      - path: /api/notification-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: notification-srv
-            port:
-              number: 3008
-      - path: /api/post-service/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: post-srv
-            port:
-              number: 3004
-
+    - host: chordchat.site
+      http:
+        paths:
+          - path: /api/users(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-auth-srv
+                port:
+                  number: 3001
+          - path: /api/user-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-service-srv
+                port:
+                  number: 3002
+          - path: /api/ticket-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ticket-srv
+                port:
+                  number: 3005
+          - path: /api/ticket-order-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ticket-order-srv
+                port:
+                  number: 3007
+          - path: /api/market(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: market-srv
+                port:
+                  number: 3003
+          - path: /api/chat-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: chat-srv
+                port:
+                  number: 3009
+          - path: /api/payment-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: payment-srv
+                port:
+                  number: 3006
+          - path: /api/notification-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: notification-srv
+                port:
+                  number: 3008
+          - path: /api/post-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: post-srv
+                port:
+                  number: 3004
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+  use-proxy-protocol: "false"
 ---
 apiVersion: v1
 kind: Service
@@ -99,17 +112,3 @@ spec:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/component: controller
----
-apiVersion: v1
-data:
-  use-proxy-protocol: "false"
-kind: ConfigMap
-metadata:
-  name: ingress-nginx-controller
-  namespace: ingress-nginx
-  labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
