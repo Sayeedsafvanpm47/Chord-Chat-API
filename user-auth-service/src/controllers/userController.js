@@ -22,7 +22,9 @@ const signInUser = async (req, res, next) => {
       delete userDetails.password;
       console.log(userDetails);
       const userJWT = jwt.sign(userDetails, process.env.JWT_KEY);
-
+      req.session = {
+        jwt : userJWT
+      }
       res.cookie("jwt", userJWT, {
         httpOnly: true,
         secure: true,
