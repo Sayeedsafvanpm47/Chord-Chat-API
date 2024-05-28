@@ -24,7 +24,7 @@ app.set("trust proxy", true);
           origin: ['http://localhost:5173','www.chordchat.site'],    // reqexp will match all prefixes
           methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
           credentials: true,                // required to pass
-          allowedHeaders: "Content-Type, Authorization, X-Requested-With",
+          allowedHeaders: "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Origin",
         }
         // intercept pre-flight check for all routes
         // app.options('*', cors(corsOptions))
